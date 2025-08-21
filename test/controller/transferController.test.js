@@ -18,6 +18,7 @@ describe('Transfer Controller', () => {
                     amount: 100
                 })
             expect(resposta.status).to.equal(404);
+            expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
 
         })
     });
