@@ -40,6 +40,9 @@ describe('Transfer Controller', () => {
             expect(resposta.status).to.equal(404);
             expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
 
+            //desfazer o mock
+            sinon.restore();
+
         })
     });
 });
