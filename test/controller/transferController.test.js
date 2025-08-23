@@ -26,9 +26,9 @@ describe('Transfer Controller', () => {
         })
 
         it('Usando Mocks:Quando informo remetente e destinatario inexistente recebo 404',async()=>{
-            //mockar apenas a função Trnasfer do service
+            //mockar apenas a função Transfer do service
 
-            const transferMock = sinon.stub(transferService,'transfer')
+            const transferServiceMock = sinon.stub(transferService,'transfer')
             transferServiceMock.throws(new Error('Sender or recipient not found.'));
             const resposta = await requester(app)
                 .post('/transfers')
