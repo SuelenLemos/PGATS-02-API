@@ -6,10 +6,30 @@ const { expect } = require('chai');
 //aplicação
 const app = require('../../app');
 
+//mocks
+const transferService = require('../../service/transferService');
+
 //testes
 describe('Transfer Controller', () => {
     describe('POST /transfers', () => {
         it('Quando informo remetente e destinatario inexistente recebo 404',async()=>{
+            const resposta = await requester(app)
+                .post('/transfers')
+                .send({
+                   from: "Suelen",
+                    to: "Julio",
+                    amount: 100
+                })
+            expect(resposta.status).to.equal(404);
+            expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
+
+        })
+
+        it('Usando Mocks:Quando informo remetente e destinatario inexistente recebo 404',async()=>{
+            //mockar apenas a função Trnasfer do service
+
+            const transferMock = sinon.stub(transferService,'transfer')
+            transferServiceMock.throws(new Error('Sender or recipient not found.'));
             const resposta = await requester(app)
                 .post('/transfers')
                 .send({
