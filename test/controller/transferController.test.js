@@ -8,6 +8,7 @@ const app = require('../../app');
 
 //mocks
 const transferService = require('../../service/transferService');
+const userModel = require('../../model/userModel');
 
 //testes
 describe('Transfer Controller', () => {
@@ -28,7 +29,7 @@ describe('Transfer Controller', () => {
         it('Usando Mocks:Quando informo remetente e destinatario inexistente recebo 404',async()=>{
             //mockar apenas a função Transfer do service
 
-            const transferServiceMock = sinon.stub(transferService,'transfer')
+            const transferServiceMock = sinon.stub(transferService,'transfer')//sinon.stub(objeto, 'metodo')
             transferServiceMock.throws(new Error('Sender or recipient not found.'));
             const resposta = await requester(app)
                 .post('/transfers')
@@ -44,5 +45,35 @@ describe('Transfer Controller', () => {
             sinon.restore();
 
         })
+
+        it('Quando informo valores validos recebo 200',async()=>{
+            const transferServiceMock = sinon.stub(transferService,'transfer')
+            const findUserStub = sinon.stub(userModel, 'findUser');
+             findUserStub.withArgs('Fulano').returns({
+                 name: "Fulano",
+                 balance: 1000,
+                 isFavored: true
+                    });
+    
+            findUserStub.withArgs('Sicrano').returns({
+                name: "Sicrano", 
+                balance: 500,
+                isFavored: true
+                });
+            transferServiceMock.resolves({status:200,message:'Transfer successful.'});
+            const resposta = await requester(app)
+                .post('/transfers')
+                .send({
+                   from: "Fulano",
+                    to: "Sicrano",
+                    amount: 100
+                })
+            expect(resposta.status).to.equal(200);
+            expect(resposta.body).to.have.property('message', 'Transfer successful.');
+
+            //desfazer o mock
+            sinon.restore();
     });
+    
+});
 });
