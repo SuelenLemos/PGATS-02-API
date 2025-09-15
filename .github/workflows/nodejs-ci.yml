@@ -26,10 +26,10 @@ jobs:
       run: npm run test-controller
 
     - name: Subir API
-      run: npm start & // Inicia a API em segundo plano
+      run: npm start & 
 
     - name: esperar a api estar funcionando
       run: sleep 5
 
-    - name: rodar os teste de API via http //external
+    - name: rodar os teste de API via http 
       run: npm run test-external
