@@ -69,8 +69,18 @@ describe('Transfer Controller', () => {
                     amount: 100
                 })
             expect(resposta.status).to.equal(200);
-            expect(resposta.body).to.have.property('message', 'Transfer successful.');
-            console.log(resposta.body);
+            // validação com fixture
+            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosRecebo200.json');
+            expect(resposta.body).to.deep.equal(respostaEsperada);
+
+            /* se houver respostas com datas precisamos utilizar o comando delete:
+            delete resposta.body.date; que vai eliminar a data da resposta
+            delete respostaEsperada.date; que vai eliminar a data da resposta esperada
+            */
+
+            
+            //expect(resposta.body).to.have.property('message', 'Transfer successful.');
+            //console.log(resposta.body);
 
             //desfazer o mock
             sinon.restore();
