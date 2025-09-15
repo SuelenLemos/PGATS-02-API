@@ -70,6 +70,7 @@ describe('Transfer Controller', () => {
                 })
             expect(resposta.status).to.equal(200);
             expect(resposta.body).to.have.property('message', 'Transfer successful.');
+            console.log(resposta.body);
 
             //desfazer o mock
             sinon.restore();
