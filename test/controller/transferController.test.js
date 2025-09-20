@@ -14,8 +14,12 @@ const userModel = require('../../model/userModel');
 describe('Transfer Controller', () => {
     describe('POST /transfers', () => {
         it('Quando informo remetente e destinatario inexistente recebo 404',async()=>{
+            // Gera um token JWT válido
+            const jwt = require('jsonwebtoken');
+            const token = jwt.sign({ username: 'Suelen', isFavored: true }, 'supersecret', { expiresIn: '1h' });
             const resposta = await requester(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                    from: "Suelen",
                     to: "Julio",
@@ -23,16 +27,17 @@ describe('Transfer Controller', () => {
                 })
             expect(resposta.status).to.equal(404);
             expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
-
         })
 
         it('Usando Mocks:Quando informo remetente e destinatario inexistente recebo 404',async()=>{
             //mockar apenas a função Transfer do service
-
+            const jwt = require('jsonwebtoken');
+            const token = jwt.sign({ username: 'Suelen', isFavored: true }, 'supersecret', { expiresIn: '1h' });
             const transferServiceMock = sinon.stub(transferService,'transfer')//sinon.stub(objeto, 'metodo')
             transferServiceMock.throws(new Error('Sender or recipient not found.'));
             const resposta = await requester(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                    from: "Suelen",
                     to: "Julio",
@@ -40,13 +45,13 @@ describe('Transfer Controller', () => {
                 })
             expect(resposta.status).to.equal(404);
             expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
-
             //desfazer o mock
             sinon.restore();
-
         })
 
         it('Quando informo valores validos recebo 200',async()=>{
+            const jwt = require('jsonwebtoken');
+            const token = jwt.sign({ username: 'Fulano', isFavored: true }, 'supersecret', { expiresIn: '1h' });
             const transferServiceMock = sinon.stub(transferService,'transfer')
             const findUserStub = sinon.stub(userModel, 'findUser');
              findUserStub.withArgs('Fulano').returns({
@@ -63,6 +68,7 @@ describe('Transfer Controller', () => {
             transferServiceMock.resolves({status:200,message:'Transfer successful.'});
             const resposta = await requester(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                    from: "Fulano",
                     to: "Sicrano",
@@ -72,16 +78,6 @@ describe('Transfer Controller', () => {
             // validação com fixture
             const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosRecebo200.json');
             expect(resposta.body).to.deep.equal(respostaEsperada);
-
-            /* se houver respostas com datas precisamos utilizar o comando delete:
-            delete resposta.body.date; que vai eliminar a data da resposta
-            delete respostaEsperada.date; que vai eliminar a data da resposta esperada
-            */
-
-            
-            //expect(resposta.body).to.have.property('message', 'Transfer successful.');
-            //console.log(resposta.body);
-
             //desfazer o mock
             sinon.restore();
     });
