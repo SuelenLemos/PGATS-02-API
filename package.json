@@ -4,9 +4,9 @@
   "description": "API para testes e automação de transferências",
   "main": "server.js",
   "scripts": {
-    "test": "mocha test/**/*.test.js --timeout 10000",
-    "test-external": "mocha test/external/**/*.test.js --timeout 10000",
-    "test-controller": "mocha test/controller/**/*.test.js --timeout 10000",
+    "test": "mocha test/**/*.test.js --timeout 10000 --reporter mochawesome",
+    "test-external": "mocha test/external/**/*.test.js --timeout 10000 --reporter mochawesome",
+    "test-controller": "mocha test/controller/**/*.test.js --timeout 10000 --reporter mochawesome",
     "start": "node server.js"
   },
   "dependencies": {
@@ -17,5 +17,8 @@
     "sinon": "^21.0.0",
     "supertest": "^7.1.4",
     "swagger-ui-express": "4.6.3"
+  },
+  "devDependencies": {
+    "mochawesome": "^7.1.4"
   }
 }
