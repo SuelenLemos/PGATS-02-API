@@ -5,7 +5,19 @@ const { expect } = require('chai');
 //aplicação
 
 
-
+ describe('POST /transfers', () => {
+        it('Quando informo remetente e destinatario inexistente recebo 404',async()=>{
+            const resposta = await requester('http://localhost:3000')
+                .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                   from: "Suelen",
+                    to: "Julio",
+                    amount: 100
+                })
+            expect(resposta.status).to.equal(404);
+            expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
+        });
 //testes
 describe('Transfer Controller External', () => {
     let token;
@@ -21,18 +33,6 @@ describe('Transfer Controller External', () => {
         token = loginRes.body.token;
     });
 
-    describe('POST /transfers', () => {
-        it('Quando informo remetente e destinatario inexistente recebo 404',async()=>{
-            const resposta = await requester('http://localhost:3000')
-                .post('/transfers')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                   from: "Suelen",
-                    to: "Julio",
-                    amount: 100
-                })
-            expect(resposta.status).to.equal(404);
-            expect(resposta.body).to.have.property('message', 'Sender or recipient not found.');
-        });
+   
     });
 });
